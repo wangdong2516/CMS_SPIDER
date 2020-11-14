@@ -11,5 +11,9 @@ class JobItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     name = Field()
+    job_type = Field()
     url = Field()
     source = Field()
+    work_experience = Field()
+    degree = Field()
+    salary = Field()

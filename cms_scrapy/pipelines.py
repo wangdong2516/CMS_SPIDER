@@ -30,20 +30,18 @@ class BossItemPipeline:
         """
             处理数据
         """
-
-        # 插入之前先查询，避免重复插入
-        select_sql = """
-            SELECT `name` FROM `position` WHERE `name`=%s
+        # 插入数据
+        sql = """
+            INSERT INTO `position` (
+                `name`, `job_type`, `url`, `source`,
+                `work_experience`, `degree`, `salary`,
+                `create_time`, `update_time`
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), NOW())
         """
-        row = self.cursor.execute(select_sql, item['name'])
-        if not row:
-
-            # 插入数据
-            sql = """
-                INSERT INTO `position` (`name`, `create_time`, `update_time`, `url`, `source`)
-                VALUES (%s, NOW(), NOW(), %s, %s)
-            """
-            self.cursor.execute(sql, [item['name'], item['url'], item['source']])
+        self.cursor.execute(
+            sql, [item['name'], item['job_type'], item['url'], item['source'], item['work_experience'], item['degree'], item['salary']]
+        )
         self.conn.commit()
         return item
 

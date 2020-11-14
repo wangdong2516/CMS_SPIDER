@@ -1,3 +1,3 @@
 from scrapy import cmdline
 
-cmdline.execute(['scrapy', 'crawl', 'boss', '-o', 'test.csv'])
+cmdline.execute(['scrapy', 'crawl', 'lagou', '-o', 'test.csv'])

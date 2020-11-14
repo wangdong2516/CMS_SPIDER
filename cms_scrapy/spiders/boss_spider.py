@@ -4,7 +4,7 @@ import httpx
 import scrapy
 import time
 from scrapy import Request
-from scrapy.http import HtmlResponse
+from scrapy.http import TextResponse
 
 from cms_scrapy.items import JobItem
 
@@ -86,6 +86,7 @@ class BossSpider(scrapy.Spider):
 
         for url in urls:
             self.headers['proxy'] = random.choice(PROXY_http)
+            time.sleep(5)
             yield scrapy.Request(url=url, callback=self.parse, headers=self.headers)
 
     def parse(self, response, **kwargs):
@@ -113,10 +114,9 @@ class BossSpider(scrapy.Spider):
         for url in links:
             # 这里因为爬虫速度太快可能会导致IP被封，所以手动使用httpx发起请求
             self.headers['proxy'] = random.choice(PROXY_http)
-            response = httpx.get(url=url, headers=self.make_headers())
-            scarpy_response = HtmlResponse(url=str(response.url), body=response.text, encoding='utf8')
-            jobs = scarpy_response.xpath('//div[@class="menu_main job_hopping"]//a/h3/text()').extract()
-
+            httpx_response = httpx.get(url=response.urljoin(url), headers=self.make_headers())
+            scarpy_response = TextResponse(url=str(response.urljoin(url)), body=httpx_response.text, encoding='utf8')
+            jobs = scarpy_response.xpath('//div[@class="job-limit clearfix"]//p/text()[1]').extract()
 
     def parse_position(self, response, **kwargs):
         # 职位薪资
